@@ -1,7 +1,13 @@
-FROM node:12
+FROM jshimko/kube-tools-aws:latest
 
-RUN apt-get update && apt-get install -y zip && rm -rf /var/lib/apt/lists/*
-RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && unzip awscliv2.zip
-RUN ./aws/install && aws --version
+RUN apk add --no-cache curl
+WORKDIR /tmp/plug
 
-CMD ["node"]
+RUN curl -L https://github.com/vmware-tanzu/octant/releases/download/v0.17.0/octant_0.17.0_Linux-64bit.tar.gz | tar xzv
+RUN mv ./octant_0.17.0_Linux-64bit/octant /root/
+
+WORKDIR /root
+
+EXPOSE 7777
+
+CMD OCTANT_LISTENER_ADDR=0.0.0.0:7777 ./octant --disable-open-browser
