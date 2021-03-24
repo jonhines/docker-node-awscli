@@ -1,10 +1,15 @@
-# sleavely/node-awscli
+# jonhines/kubectl-octant-docker
 
-Lambda-compatible NodeJS images with AWS CLI installed.
+Docker container to ease access to view an Octant dashboard for a running an AWS EKS kubernetes dashboard.  
 
-[Docker Hub](https://hub.docker.com/repository/docker/jonhines/node_aws_cli)
+# How to use
+The container requires you to provide a volume mount that points towards:
+* Your local .aws credentials -> for interacting with the cluster from within the Octant UI
+* Your local .kube/config -> instructing Octant which cluster to use
 
-## Usage in CI/CD environments
+Example docker run passing in kubeconfig and aws credentials, and setting up port-forwarding for local access to dashboard UI from your browser:
 
-Instead of using e.g. `node:12` and installing `awscli` every time the pipeline runs, just switch out the name of the image to `jonhines/node-aws_cli` with the appropriate version tag. Tags are named after the Lambda NodeJS runtime identifier.
+`docker run -it -p 7777:7777 -v $HOME/.kube/config:/root/.kube/config:ro -v $HOME/.aws/credentials:/root/.aws/credentials:ro jonhines/kubectl-octant-docker:latest`
 
+## Dependencies
+Relies on jshimko/kube-tools-aws base image to simplify access to kubectl and aws CLI libs.
